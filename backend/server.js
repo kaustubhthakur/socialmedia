@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 require('dotenv').config();
 const app = express();
 const port = 7000
+const authrouter = require('./routes/auth')
 const connection = async(req,res)=>{
     try {
         await mongoose.connect(process.env.MONGODB);
@@ -14,7 +15,7 @@ const connection = async(req,res)=>{
     }
 }
 connection();
-
+app.use('/auth',authrouter)
 app.listen(port,() =>{
 console.log(`server is running on port ${port}...`)
 })
