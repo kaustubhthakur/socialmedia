@@ -1,5 +1,5 @@
 const Post = require('../models/Post')
-const createpost = async(req,res)=>{
+const createpost = async (req, res) => {
     try {
         const newpost = new Post(req.body);
         const savepost = await newpost.save();
@@ -8,7 +8,34 @@ const createpost = async(req,res)=>{
         console.error(error)
     }
 }
-const getPost = async(req,res)=>{
+const likeUnlikePost = async (req, res) => {
+    try {
+        const { id: postId } = req.params;
+        const userId = req.user._id;
+
+        const post = await Post.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({ error: "Post not found" });
+        }
+
+        const userLikedPost = post.votes.includes(userId);
+
+        if (userLikedPost) {
+
+            await Post.updateOne({ _id: postId }, { $pull: { votes: userId } });
+            res.status(200).json({ message: "Post unliked successfully" });
+        } else {
+
+            post.votes.push(userId);
+            await post.save();
+            res.status(200).json({ message: "Post liked successfully" });
+        }
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+const getPost = async (req, res) => {
     try {
         const post = await Post.find(req.params.id);
         res.status(201).json(post);
@@ -16,7 +43,7 @@ const getPost = async(req,res)=>{
         console.error(error);
     }
 }
-const getPosts = async(req,res)=>{
+const getPosts = async (req, res) => {
     try {
         const posts = await Post.find();
         res.status(201).json(posts);
@@ -25,12 +52,12 @@ const getPosts = async(req,res)=>{
 
     }
 }
-const deletePost = async(req,res)=>{
+const deletePost = async (req, res) => {
     try {
         await Post.findByIdAndDelete(req.params.id);
-        res.status(201).json({message:"post is deleted..."})
+        res.status(201).json({ message: "post is deleted..." })
     } catch (error) {
         console.error(error);
     }
 }
-module.exports = {createpost};
+module.exports = { createpost, deletePost, getPost, getPosts, likeUnlikePost };

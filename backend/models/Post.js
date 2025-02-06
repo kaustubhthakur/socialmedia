@@ -9,11 +9,12 @@ const PostSchema = new mongoose.Schema({
         required:true,
     },
     votes:{
-        type:[String],
-        default:[],
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "User",
+        default: [],
     },
     userId:{
-        type:String,
+        type:mongoose.Schema.Types.ObjectId,
         required:true,
     },
 },{
