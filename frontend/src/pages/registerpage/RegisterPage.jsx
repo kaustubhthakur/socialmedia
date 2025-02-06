@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "./RegisterPage.css"
+import "./RegisterPage.css";
+import { useSetRecoilState } from "recoil";
+import userAtom from "../../atoms/userAtom";
 const RegisterPage = () => {
   const [inputs, setInputs] = useState({
     username: "",
     email: "",
     password: "",
   });
+  const setUser = useSetRecoilState(userAtom);
   const handleSignup = async () => {
     try {
       const res = await fetch("http://localhost:7000/auth/register", {
@@ -18,15 +21,12 @@ const RegisterPage = () => {
       });
       const data = await res.json();
 
-      if (data.error) {
-        showToast("Error", data.error, "error");
-        return;
-      }
-alert('regsiterd!!')
+      alert("regsiterd!!");
+      console.log(data)
       localStorage.setItem("users", JSON.stringify(data));
       setUser(data);
     } catch (error) {
-      showToast("Error", error, "error");
+     console.error(error)
     }
   };
   return (
