@@ -6,7 +6,8 @@ require('dotenv').config();
 const app = express();
 const port = 7000
 const authrouter = require('./routes/auth')
-
+const userrouter =require('./routes/users')
+const postrouter = require('./routes/posts')
 
 app.use(express.json())
 app.use(cookieparser())
@@ -21,6 +22,8 @@ const connection = async(req,res)=>{
 }
 connection();
 app.use('/auth',authrouter)
+app.use('/posts',postrouter)
+app.use('/users',userrouter)
 app.listen(port,() =>{
 console.log(`server is running on port ${port}...`)
 })
